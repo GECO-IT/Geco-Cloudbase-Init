@@ -17,4 +17,4 @@ There is two files that we need to modify Qemu.pm and Cloudinit.pm.
 * Qemu.pm to get password as cleartext in meta_data drive when it is a Windows VM.
 * Cloudinit.pm to generate a metadata json file with variables that are compatible with Cloudbase-Init.
 
-
+If you want to apply the patch manually you can follow these steps: [Manual Patching](https://git.geco-it.net/c.soylu/Geco-cloudbase-init/src/branch/master/MANUALPATCH.md)
