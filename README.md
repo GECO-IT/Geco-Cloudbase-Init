@@ -21,11 +21,11 @@ There is two files that we need to modify Qemu.pm and Cloudinit.pm.
 If you want to apply the patch manually you can follow these steps: [Manual Patching](https://git.geco-it.net/c.soylu/Geco-cloudbase-init/src/branch/master/MANUALPATCH.md)
 
 ## Scripts
-We have two scripts that do some fonctionality that we needed; enabling administrator user and enabling dhcp
+We have [two scripts](https://git.geco-it.net/c.soylu/Geco-cloudbase-init/src/branch/master/localscripts) that do some fonctionality that we needed; enabling administrator user and enabling dhcp
 You need to move those scripts into Cloudbase Solutions\Cloudbase-Init\LocalScripts\ in your program files.
 
 ## Powershell Script
-This powershell script has a few uses.
+[This](https://git.geco-it.net/c.soylu/Geco-cloudbase-init/src/branch/master/powershell) powershell script has a few uses.
 * Deletes the "cloudbase-init" user, delegates "cloudbase-init" service to local Systeme user and modifies execution path of the script also to use local system user.
 * Installs OpenSSH-Server from optional features of Windows.
 * Removes a store language package that causes an error when generelazing for sysprep.
