@@ -137,10 +137,10 @@
 -     "network_config": { "content_path": "/content/0000" }
 +     "meta":{
 +     	"admin_username": "$username",
-+     	"admin_pass": "$password",
-+	"uuid":"$uuid",
-+	"hostname":"$hostname"
++     	"admin_pass": "$password"
 +     },
++	 "uuid":"$uuid",
++	 "hostname":"$hostname",
 +     "network_config":{"content_path":"/content/0000"}$pubkeys$dhcpmacs
  }
  EOF
@@ -154,3 +154,4 @@
      }
      my $files = {
  	'/openstack/latest/user_data' => $user_data,
+
