@@ -44,7 +44,9 @@ If you want to revert the patch:
 If you want to apply the patch manually you can follow these steps: [Manual Patching](https://git.geco-it.net/c.soylu/Geco-cloudbase-init/src/branch/master/MANUALPATCH.md)
 
 ## Windows VM Configuration
-Create a Windows VM in proxmox and configure it to your needs.
+* Create a Windows VM in proxmox
+* Go to Hardware section of your VM, add Cloud-Init Drive and Serial Port 0
+Then configure Windows to your needs and proceed to Cloudbase-Init installation.
 
 ### Install Cloudbase-Init
 Install Cloudbase-Init Continous Build from the [official website](https://cloudbase.it/cloudbase-init/#download).
