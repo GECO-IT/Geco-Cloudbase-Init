@@ -18,7 +18,7 @@ There is two files that we need to modify Qemu.pm and Cloudinit.pm.
 * Qemu.pm to get password as cleartext in meta_data drive when it is a Windows VM.
 * Cloudinit.pm to generate a metadata json file with variables that are compatible with Cloudbase-Init.
 
-## Proxmox Patch
+## Install Proxmox patch
 
 We have provided patch file for two different versions, if you are on those versions you can simply download it and apply the patch by doing;
 ```
@@ -43,22 +43,37 @@ If you want to revert the patch:
 
 If you want to apply the patch manually you can follow these steps: [Manual Patching](https://git.geco-it.net/c.soylu/Geco-cloudbase-init/src/branch/master/MANUALPATCH.md)
 
-## Cloudbase-Init LocalScripts
+## Windows VM Configuration
+Create a Windows VM in proxmox and configure it to your needs.
+
+### Install Cloudbase-Init
+Install Cloudbase-Init Continous Build from the [official website](https://cloudbase.it/cloudbase-init/#download).
+
+Why Continous Build? Because the stable build dates from 2020 and doesn't include functionalities we use.
+
+### Cloudbase-Init LocalScripts
 We have [two scripts](https://git.geco-it.net/c.soylu/Geco-cloudbase-init/src/branch/master/localscripts) that do some fonctionality that Cloudbase-Init doesnt have;
 * Enabling administrator user when it's name is given to the Cloudbase-Init.
 * Enabling DHCP on the network adapters.
 
 Move those scripts into Cloudbase Solutions\Cloudbase-Init\LocalScripts\ in your program files of your Windows VM.
 
-## Powershell Script
+### Configure Cloudbase-Init
+Deploy [these two conf files](https://git.geco-it.net/c.soylu/Geco-Cloudbase-Init/src/branch/master/conf) to `C:\Program Files\Cloudbase Solutions\Cloudbase-Init\conf`.
+
+Inside those two files modify the `groups=Administrators` to the Windows group that you want your created user to be in.
+
+### Run PowerShell Script
 [This](https://git.geco-it.net/c.soylu/Geco-cloudbase-init/src/branch/master/powershell) powershell script has a few uses.
 * Deletes the "cloudbase-init" user, delegates "cloudbase-init" service to local Systeme user and modifies execution path of the script also to use local system user.
 * Installs OpenSSH-Server from optional features of Windows.
 * Removes a store language package that causes an error when generelazing for sysprep.
 
-Run this script after installing Cloudbase-Init Continous Build. We need continous build because the stable build dates from 2020 and doesnt include functionalities we use.
+Run this script after installing and configuring Cloudbase-Init Continous Build.
 
+### Run SysPrep
 When everything is installed simply run below in powershell to launch sysprep:
+
 ```
 cd ‘C:\Program Files\Cloudbase Solutions\Cloudbase-Init\conf’
 C:\Windows\System32\sysprep\sysprep.exe /generalize /oobe /unattend:Unattend.xml
