@@ -45,8 +45,9 @@ If you want to apply the patch manually you can follow these steps: [Manual Patc
 
 ## Cloudbase-Init LocalScripts
 We have [two scripts](https://git.geco-it.net/c.soylu/Geco-cloudbase-init/src/branch/master/localscripts) that do some fonctionality that Cloudbase-Init doesnt have;
-* Enabling administrator user when it's name is given to the Cloudbase-Init
-* Enabling DHCP on the network adapters
+* Enabling administrator user when it's name is given to the Cloudbase-Init.
+* Enabling DHCP on the network adapters.
+
 Move those scripts into Cloudbase Solutions\Cloudbase-Init\LocalScripts\ in your program files of your Windows VM.
 
 ## Powershell Script
