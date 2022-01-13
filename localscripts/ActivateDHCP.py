@@ -39,9 +39,7 @@ if meta_data_path != "False":
     for mac in macs:
         name = get_name_by_mac(mac)
         activate_dhcp(name, family)
-        
-        
-
+    sys.exit(1001)
 else:
     sys.exit(0)
 
