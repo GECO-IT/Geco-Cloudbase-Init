@@ -64,7 +64,7 @@ Move those scripts into Cloudbase Solutions\Cloudbase-Init\LocalScripts\ in your
 ### Configure Cloudbase-Init
 Deploy [these two conf files](https://git.geco-it.net/c.soylu/Geco-Cloudbase-Init/src/branch/master/conf) to `C:\Program Files\Cloudbase Solutions\Cloudbase-Init\conf`.
 
-Inside those two files modify the `groups=Administrators` to the Windows group that you want your created user to be in.
+Inside those files you will find the default Administrator name and the user group that will be used while user creation. You can launch our [ModifyConf.ps1](https://git.geco-it.net/GECO-IT-PUBLIC/Geco-Cloudbase-Init/src/branch/master/powershell) script to modify that file to get the correct username and group of your Windows language.
 
 ### Run PowerShell Script
 [This](https://git.geco-it.net/c.soylu/Geco-cloudbase-init/src/branch/master/powershell) powershell script has a few uses.
