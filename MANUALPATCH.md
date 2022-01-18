@@ -125,7 +125,7 @@ sub get_mac_addresses {
     }
 
     if (@dhcpmacs){
-        $dhcpstring .= ",\n     \"dhcp\":[";
+        $dhcpstring = ",\n     \"dhcp\":[";
         foreach my $mac (@dhcpmacs){
             if ($mac != @dhcpmacs[-1]){
                 $dhcpstring .= "\"$mac\",";
@@ -147,20 +147,22 @@ We get DHCP macs from our previous fonction, UUID, Hostname, Username, Password 
 ```
 sub configdrive2_gen_metadata {
     my ($conf, $vmid, $user, $network) = @_;
-    
-    # Get DHCP nics by mac adresses  
+
+    # Get mac addresses of dhcp nics from conf file  
     my $dhcpmacs = undef;
     $dhcpmacs = get_mac_addresses($conf);
 
     # Get UUID
     my $uuid_str = Digest::SHA::sha1_hex($user.$network);
+
     # Get hostname
     my ($hostname, $fqdn) = get_hostname_fqdn($conf, $vmid);
-    
-    # Get username, default to Administrateur if none
-    my $username = "Administrateur";
+
+    # Get username, default to Administrator if none
+    my $username = undef;
     if (defined($conf->{ciuser})){
-        $username = $conf->{ciuser};
+        my $name = $conf->{ciuser};
+        $username = ",\n        \"admin_username\": \"$name\""
     }
 
     # Get user password
@@ -168,9 +170,10 @@ sub configdrive2_gen_metadata {
 
     # Get ssh keys and make a list out of it in json format
     my $keystring = undef;
-    if (defined(my $pubkeys = $conf->{sshkeys})) {
-        $pubkeys = URI::Escape::uri_unescape($pubkeys);
-        my @pubkeysarray = split "\n", $pubkeys;
+    my $pubkeys = $conf->{sshkeys};
+    $pubkeys = URI::Escape::uri_unescape($pubkeys);
+    my @pubkeysarray = split "\n", $pubkeys;
+    if (@pubkeysarray) {
         my $arraylength = @pubkeysarray;
         my $incrementer = 1;
         $keystring =",\n     \"public_keys\": {\n";
@@ -199,11 +202,10 @@ sub configdrive2_metadata {
     return <<"EOF";
 {
      "meta":{
-        "admin_username": "$username",
-        "admin_pass": "$password",
-        "uuid":"$uuid",
-        "hostname":"$hostname"
+        "admin_pass": "$password"$username
      },
+     "uuid":"$uuid",
+     "hostname":"$hostname",
      "network_config":{"content_path":"/content/0000"}$pubkeys$dhcpmacs
 }
 EOF
