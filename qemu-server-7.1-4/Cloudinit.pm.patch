@@ -1,5 +1,5 @@
 --- /usr/share/perl5/PVE/QemuServer/Cloudinit.pm.orig	2021-11-22 17:07:13.000000000 +0100
-+++ /usr/share/perl5/PVE/QemuServer/Cloudinit.pm	2022-01-10 17:45:09.878386787 +0100
++++ /usr/share/perl5/PVE/QemuServer/Cloudinit.pm	2022-01-18 11:18:40.902886004 +0100
 @@ -163,13 +163,23 @@
      $content .= "iface lo inet loopback\n\n";
  
@@ -10,7 +10,7 @@
 +    my $default_dns = '';
 +    my $default_search = '';
 +    ##
-+    my $dnsinserted = 0;
++    my $dnsinserted = 0; # insert dns just once for the machine
 +
      if ($nameservers && @$nameservers) {
  	$nameservers = join(' ', @$nameservers);
@@ -38,10 +38,11 @@
  	    }
  	}
  	if ($net->{ip6}) {
-@@ -207,23 +224,100 @@
+@@ -207,23 +224,102 @@
      return $content;
  }
  
++# Get mac addresses of dhcp nics from conf file
 +sub get_mac_addresses {
 +    my ($conf) = @_;
 +    
@@ -63,9 +64,9 @@
 +    }
 +
 +    if (@dhcpmacs){
-+        $dhcpstring .= ",\n     \"dhcp\":[";
++        $dhcpstring = ",\n     \"dhcp\":[";
 +        foreach my $mac (@dhcpmacs){
-+            if ($mac != @dhcpmacs[-1]){
++            if ($mac != $dhcpmacs[-1]){
 +                $dhcpstring .= "\"$mac\",";
 +            }
 +            else{
@@ -79,22 +80,23 @@
  sub configdrive2_gen_metadata {
 -    my ($user, $network) = @_;
 +    my ($conf, $vmid, $user, $network) = @_;
-+    
-+    # Get DHCP nics by mac adresses  
++
++    # Get mac addresses of dhcp nics from conf file  
 +    my $dhcpmacs = undef;
 +    $dhcpmacs = get_mac_addresses($conf);
  
 +    # Get UUID
      my $uuid_str = Digest::SHA::sha1_hex($user.$network);
 -    return configdrive2_metadata($uuid_str);
-+    
++
 +    # Get hostname
 +    my ($hostname, $fqdn) = get_hostname_fqdn($conf, $vmid);
-+    
++
 +    # Get username, default to Administrator if none
-+    my $username = "Administrator";
++    my $username = undef;
 +    if (defined($conf->{ciuser})){
-+        $username = $conf->{ciuser};
++        my $name = $conf->{ciuser};
++        $username = ",\n        \"admin_username\": \"$name\""
 +    }
 +
 +    # Get user password
@@ -102,9 +104,10 @@
 +
 +    # Get ssh keys and make a list out of it in json format
 +    my $keystring = undef;
-+    if (defined(my $pubkeys = $conf->{sshkeys})) {
-+        $pubkeys = URI::Escape::uri_unescape($pubkeys);
-+        my @pubkeysarray = split "\n", $pubkeys;
++    my $pubkeys = $conf->{sshkeys};
++    $pubkeys = URI::Escape::uri_unescape($pubkeys);
++    my @pubkeysarray = split "\n", $pubkeys;
++    if (@pubkeysarray) {
 +        my $arraylength = @pubkeysarray;
 +        my $incrementer = 1;
 +        $keystring =",\n     \"public_keys\": {\n";
@@ -130,8 +133,7 @@
 -     "uuid": "$uuid",
 -     "network_config": { "content_path": "/content/0000" }
 +     "meta":{
-+        "admin_username": "$username",
-+        "admin_pass": "$password"
++        "admin_pass": "$password"$username
 +     },
 +     "uuid":"$uuid",
 +     "hostname":"$hostname",
@@ -144,7 +146,7 @@
  sub generate_configdrive2 {
      my ($conf, $vmid, $drive, $volname, $storeid) = @_;
  
-@@ -232,7 +326,7 @@
+@@ -232,7 +328,7 @@
      $network_data = configdrive2_network($conf) if !defined($network_data);
  
      if (!defined($meta_data)) {

@@ -1,5 +1,5 @@
 --- /usr/share/perl5/PVE/API2/Qemu.pm.orig	2021-04-29 16:16:04.000000000 +0200
-+++ /usr/share/perl5/PVE/API2/Qemu.pm	2022-01-03 12:16:43.275446612 +0100
++++ /usr/share/perl5/PVE/API2/Qemu.pm	2022-01-11 16:24:26.638619060 +0100
 @@ -1084,10 +1084,17 @@
  
      my $background_delay = extract_param($param, 'background_delay');
