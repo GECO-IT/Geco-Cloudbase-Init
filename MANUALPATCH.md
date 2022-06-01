@@ -12,6 +12,9 @@ The code to edit in my $update_vm_api fonction is belove;
  
 
 ```
+    my $conf = PVE::QemuConfig->load_config($vmid);
+    my $ostype = $conf->{ostype};
+
     if (defined(my $cipassword = $param->{cipassword})) {
         # Same logic as in cloud-init (but with the regex fixed...)
         if (!(PVE::QemuServer::windows_version($ostype))) { # new if block for support windowsand insert old code inside it
