@@ -40,6 +40,8 @@ patch --force --forward --backup -p0 --directory / --input "/absolute/path/to/pa
 If you want to revert the patch:
 `patch --force --reverse --backup -p0 --directory / --input "/absolute/path/to/patchfile.pm.patch"`
 
+After you apply the patch, you must restart the PVEdaemon to load the changes. If you do not restart it, Cloud-init will not work properly:
+`systemctl restart pvedaemon.service`
 
 If you want to apply the patch manually you can follow these steps: [Manual Patching](https://git.geco-it.net/c.soylu/Geco-cloudbase-init/src/branch/master/MANUALPATCH.md)
 
